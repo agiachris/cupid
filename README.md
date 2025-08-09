@@ -16,7 +16,7 @@
 
 <a href='https://cupid-curation.github.io/'><img src='https://img.shields.io/badge/Project-Page-Green'></a> <a href='https://arxiv.org/abs/2506.19121'><img src='https://img.shields.io/badge/Paper-Arxiv-red'></a> [![YouTube](https://badges.aleen42.com/src/youtube.svg)](https://www.youtube.com/watch?v=0kmIiEjTqV8)
 
-The official code repository for *"CUPID: Curating Data your Robot Loves with Influence Functions,"* to be presented at CoRL 2025. 
+The official code repository for *"CUPID: Curating Data your Robot Loves with Influence Functions,"* accepted to CoRL 2025.
 For a brief overview of our work, please refer to our [project page](https://cupid-curation.github.io/).
 Further details can be found in our paper available on [arXiv](https://arxiv.org/abs/2506.19121).
 
@@ -24,7 +24,7 @@ Further details can be found in our paper available on [arXiv](https://arxiv.org
 
 
 ## Overview 🗺️
-This repository implements a four-stage, end-to-end data curation pipeline for robot imitation learning policies, built atop the official diffusion policy [code](https://github.com/real-stanford/diffusion_policy):
+This repository implements a four-stage, end-to-end data curation pipeline for robot imitation learning policies, built atop the official diffusion policy [codebase](https://github.com/real-stanford/diffusion_policy):
 1. 🏗️ [Train initial policies on uncurated data](#stage-1-train-policies-on-uncurated-data-️)
 2. 🤖 [Evaluate initial policies and store rollout trajectories](#stage-2-evaluate-policies-to-collect-rollouts-)
 3. 🎯 [Run data curation with CUPID and analyze curated data quality](#stage-3-curate-data-with-cupid-)
@@ -32,8 +32,8 @@ This repository implements a four-stage, end-to-end data curation pipeline for r
 
 
 #### What's included? 🗂️
-- The official implementation of CUPID and the core influence function routines for diffusion policies.
-- Data curation support (both **data filtering** and **data selection**) for PushT and RoboMimic environments.
+- The official implementation of CUPID and core influence function routines for diffusion policies.
+- Data curation support (both **data filtering** and **data selection**) for PushT and [RoboMimic](https://robomimic.github.io/) environments.
 - A suite of data curation methods spanning **offline** and **online** (i.e., requiring [policy evaluation](#stage-2-evaluate-policies-to-collect-rollouts-)) approaches.
 
 
@@ -42,9 +42,9 @@ This repository is tested on Ubuntu 20.04 with Python 3.9.15. Follow the install
 
 ### Installation 🛠️
 
-**Conda:** Python packages are managed through Conda. We recommend using **Miniconda** with **Mamba** for faster and more robust package management (as in [diffusion policy](https://github.com/real-stanford/diffusion_policy?tab=readme-ov-file#%EF%B8%8F-installation)), and we provide Mamba setup instructions [here](). 
+**Conda:** Python packages are managed through Conda. We recommend using **Miniconda** with **Mamba** for faster and more robust package management (as in [diffusion policy](https://github.com/real-stanford/diffusion_policy?tab=readme-ov-file#%EF%B8%8F-installation)), and we provide Mamba setup instructions [here](https://github.com/agiachris/cupid/blob/main/readme/install_mamba.md). 
 
-**MuJoCo:** Next, please follow these [instructions](https://github.com/openai/mujoco-py) to install the original version of `mujoco210` for Linux. If you run into trouble, you can try our provided instructions [here]().
+**MuJoCo:** Next, please follow these [instructions](https://github.com/openai/mujoco-py) to install the original version of `mujoco210` for Linux. If you run into trouble, you can try our provided instructions [here](https://github.com/agiachris/cupid/blob/main/readme/install_mujoco.md).
 
 **Virtualenv:** Finally, create the Python virtual environment using `mamba` (note: `conda` might halt):
 ```bash
@@ -79,9 +79,9 @@ The training data will be accessible under `data/robomimic/datasets`. The corres
 #### Running Experiments: Key Details 🔔 
 Experiments are launched through shell (`.sh`) scripts. These scripts make it easy to parallelize experiments on a SLURM-managed cluster. Before launching an experiment, you’ll need to update a few key variables in the script:
 - `DEBUG=1` – set to 0 to run the experiment, or 1 to print the Python command without executing it.
-- `SLURM_HOSTNAME="<enter_hostname>"` – specify the hostname of your SLURM cluster.
+- `SLURM_HOSTNAME="<enter_hostname>"` – specify the hostname of your SLURM cluster's submit node.
 - `SLURM_SBATCH_FILE="<enter_sbatch_file>"` – specify the path to your SLURM batch submission script.
-- Additional variables required for specific experiments are documented in the sections below 🔎.
+- Additional variables required for specific experiments are documented in the sections below (see 🔎).
 
 > 💡 **Note:** If SLURM is not available, the script will default to running jobs sequentially on the local machine.
 
@@ -154,7 +154,7 @@ bash scripts/eval/eval_demonstration_scores.sh
 The resulting _performance influence_ scores will be saved to the corresponding policy's evaluation directory.
 
 #### 3.3 – Generate Re-training Configs
-Before re-training the policy on curated data, we need to generate a config file that rank-orders training demos based on their computed scores in [Stage 3.2](#32--compute-performance-influences). **The notebook `notebooks/data_curation.ipynb`** implements the logic for doing so. Run the cells in `Sec 1` of the notebook to get started.
+Before re-training the policy on curated data, we need to generate a config file that rank-orders training demos based on their computed scores in [Stage 3.2](#32--compute-performance-influences). **The notebook [`notebooks/data_curation.ipynb`](https://github.com/agiachris/cupid/blob/main/notebooks/data_curation.ipynb)** implements the logic for doing so. Run the cells in `Sec 1` of the notebook to get started.
 1. To visualize data quality trends for demo filtering (resp., selection), run cell `Sec 2.1` (resp., `Sec 2.2`).
 2. To generate re-training configs for demo filtering (resp., selection), run cell `Sec 3.1` (resp., `Sec 3.2`).
 
