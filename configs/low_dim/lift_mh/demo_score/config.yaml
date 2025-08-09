@@ -1,0 +1,119 @@
+_target_: diffusion_policy.workspace.train_demo_score_lowdim_workspace.TrainDemoScoreLowdimWorkspace
+action_dim: 10
+checkpoint:
+  save_last_ckpt: true
+  save_last_snapshot: false
+  topk:
+    format_str: epoch={epoch:04d}-val_loss={val_loss:.3f}.ckpt
+    k: 5
+    mode: min
+    monitor_key: val_loss
+dataloader:
+  batch_size: 128
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: true
+exp_name: obs_global_rerun
+horizon: 16
+keypoint_dim: 3
+keypoint_visible_rate: 1.0
+logging:
+  group: null
+  id: null
+  mode: online
+  name: 2023.02.23-19.52.40_train_demo_score_lowdim_lift_lowdim
+  project: diffusion_policy_debug
+  resume: true
+  tags:
+  - train_demo_score_lowdim
+  - lift_lowdim
+  - obs_global_rerun
+multi_run:
+  run_dir: data/outputs/2023.02.23/19.52.40_train_demo_score_lowdim_lift_lowdim
+  wandb_name_base: 2023.02.23-19.52.40_train_demo_score_lowdim_lift_lowdim
+n_action_steps: 8
+n_latency_steps: 0
+n_obs_steps: 2
+name: train_demo_score_lowdim
+obs_as_global_cond: true
+obs_as_local_cond: false
+obs_dim: 19
+optimizer:
+  _target_: torch.optim.AdamW
+  betas:
+  - 0.95
+  - 0.999
+  eps: 1.0e-08
+  lr: 0.0001
+  weight_decay: 0.1
+past_action_visible: false
+model: 
+  _target_: diffusion_policy.classifier.lowdim_state_success_classfier.LowdimStateSuccessClassifier
+  model:
+    _target_: diffusion_policy.model.classifier.mlp.MLPBinaryClassifier
+    input_dim: 38
+    hidden_dims: [16, 16, 16]
+    dropout: 0.3
+  obs_dim: 19
+  n_obs_steps: 2
+pred_action_steps_only: false
+task:
+  abs_action: true
+  action_dim: 10
+  dataset:
+    _target_: diffusion_policy.dataset.episode_classifier_dataset.EpisodeClassifierDataset
+    dataset_path: ???  # Set programatically.
+    episode_cache_size: 100
+    val_ratio: 0.10
+    max_train_episodes: 25
+    seed: 42
+  demo_dataset:
+    _target_: diffusion_policy.dataset.robomimic_replay_lowdim_dataset.RobomimicReplayLowdimDataset
+    abs_action: true
+    dataset_path: data/robomimic/datasets/lift/mh/low_dim_abs.hdf5
+    horizon: 16
+    obs_keys:
+    - object
+    - robot0_eef_pos
+    - robot0_eef_quat
+    - robot0_gripper_qpos
+    pad_after: 7
+    pad_before: 1
+    rotation_rep: rotation_6d
+    seed: 42
+    use_legacy_normalizer: false
+    val_ratio: 0.02
+  dataset_path: data/robomimic/datasets/lift/mh/low_dim_abs.hdf5
+  dataset_type: mh
+  keypoint_dim: 3
+  name: lift_lowdim
+  obs_dim: 19
+  obs_keys:
+  - object
+  - robot0_eef_pos
+  - robot0_eef_quat
+  - robot0_gripper_qpos
+  task_name: lift
+task_name: lift_lowdim
+training:
+  checkpoint_every: 50
+  debug: false
+  device: cuda:0
+  gradient_accumulate_every: 1
+  lr_scheduler: cosine
+  lr_warmup_steps: 500
+  max_train_steps: null
+  max_val_steps: null
+  num_epochs: 5000
+  resume: true
+  seed: 42
+  tqdm_interval_sec: 1.0
+  use_ema: false
+  val_every: 1
+val_dataloader:
+  batch_size: 128
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: false

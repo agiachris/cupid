@@ -1,0 +1,99 @@
+_target_: diffusion_policy.workspace.train_robomimic_lowdim_workspace.TrainRobomimicLowdimWorkspace
+action_dim: 9
+checkpoint:
+  save_last_ckpt: true
+  save_last_snapshot: false
+  topk:
+    format_str: epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt
+    k: 5
+    mode: max
+    monitor_key: test_mean_score
+dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: true
+exp_name: default
+horizon: 8
+keypoint_visible_rate: 1.0
+logging:
+  group: null
+  id: null
+  mode: online
+  name: 2023.01.07-20.28.29_train_robomimic_lowdim_kitchen_lowdim
+  project: diffusion_policy_debug
+  resume: true
+  tags:
+  - train_robomimic_lowdim
+  - kitchen_lowdim
+  - default
+multi_run:
+  run_dir: data/outputs/2023.01.07/20.28.29_train_robomimic_lowdim_kitchen_lowdim
+  wandb_name_base: 2023.01.07-20.28.29_train_robomimic_lowdim_kitchen_lowdim
+n_action_steps: 1
+n_latency_steps: 0
+n_obs_steps: 1
+name: train_robomimic_lowdim
+obs_dim: 60
+past_action_visible: false
+policy:
+  _target_: diffusion_policy.policy.robomimic_lowdim_policy.RobomimicLowdimPolicy
+  action_dim: 9
+  algo_name: bc_rnn
+  dataset_type: ph
+  obs_dim: 60
+  obs_type: low_dim
+  task_name: lift
+task:
+  action_dim: 9
+  dataset:
+    _target_: diffusion_policy.dataset.kitchen_lowdim_dataset.KitchenLowdimDataset
+    dataset_dir: data/kitchen
+    horizon: 8
+    pad_after: 0
+    pad_before: 0
+    seed: 42
+    val_ratio: 0.02
+  dataset_dir: data/kitchen
+  env_runner:
+    _target_: diffusion_policy.env_runner.kitchen_lowdim_runner.KitchenLowdimRunner
+    dataset_dir: data/kitchen
+    fps: 12.5
+    max_steps: 280
+    n_action_steps: 1
+    n_envs: null
+    n_obs_steps: 1
+    n_test: 50
+    n_test_vis: 4
+    n_train: 6
+    n_train_vis: 2
+    past_action: false
+    render_hw:
+    - 240
+    - 360
+    test_start_seed: 100000
+    train_start_seed: 0
+  keypoint_dim: 3
+  name: kitchen_lowdim
+  obs_dim: 60
+task_name: kitchen_lowdim
+training:
+  checkpoint_every: 50
+  debug: false
+  device: cuda:0
+  max_train_steps: null
+  max_val_steps: null
+  num_epochs: 5000
+  resume: true
+  rollout_every: 50
+  seed: 42
+  tqdm_interval_sec: 1.0
+  val_every: 1
+transition_dim: 69
+val_dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: false

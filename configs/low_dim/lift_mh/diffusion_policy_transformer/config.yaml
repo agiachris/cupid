@@ -1,0 +1,169 @@
+_target_: diffusion_policy.workspace.train_diffusion_transformer_lowdim_workspace.TrainDiffusionTransformerLowdimWorkspace
+action_dim: 10
+checkpoint:
+  save_last_ckpt: true
+  save_last_snapshot: false
+  topk:
+    format_str: epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt
+    k: 5
+    mode: max
+    monitor_key: test_mean_score
+dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: true
+ema:
+  _target_: diffusion_policy.model.diffusion.ema_model.EMAModel
+  inv_gamma: 1.0
+  max_value: 0.9999
+  min_value: 0.0
+  power: 0.75
+  update_after_step: 0
+exp_name: default
+horizon: 10
+keypoint_visible_rate: 1.0
+logging:
+  group: null
+  id: null
+  mode: online
+  name: 2022.12.24-15.56.11_train_diffusion_transformer_lowdim_lift_lowdim
+  project: diffusion_policy_debug
+  resume: true
+  tags:
+  - train_diffusion_transformer_lowdim
+  - lift_lowdim
+  - default
+multi_run:
+  run_dir: data/outputs/2022.12.24/15.56.11_train_diffusion_transformer_lowdim_lift_lowdim
+  wandb_name_base: 2022.12.24-15.56.11_train_diffusion_transformer_lowdim_lift_lowdim
+n_action_steps: 8
+n_latency_steps: 0
+n_obs_steps: 2
+name: train_diffusion_transformer_lowdim
+obs_as_cond: true
+obs_dim: 19
+optimizer:
+  betas:
+  - 0.9
+  - 0.95
+  learning_rate: 0.0001
+  weight_decay: 0.001
+past_action_visible: false
+policy:
+  _target_: diffusion_policy.policy.diffusion_transformer_lowdim_policy.DiffusionTransformerLowdimPolicy
+  action_dim: 10
+  horizon: 10
+  model:
+    _target_: diffusion_policy.model.diffusion.transformer_for_diffusion.TransformerForDiffusion
+    causal_attn: true
+    cond_dim: 19
+    horizon: 10
+    input_dim: 10
+    n_cond_layers: 0
+    n_emb: 256
+    n_head: 4
+    n_layer: 8
+    n_obs_steps: 2
+    obs_as_cond: true
+    output_dim: 10
+    p_drop_attn: 0.3
+    p_drop_emb: 0.0
+    time_as_cond: true
+  n_action_steps: 8
+  n_obs_steps: 2
+  noise_scheduler:
+    _target_: diffusers.schedulers.scheduling_ddpm.DDPMScheduler
+    beta_end: 0.02
+    beta_schedule: squaredcos_cap_v2
+    beta_start: 0.0001
+    clip_sample: true
+    num_train_timesteps: 100
+    prediction_type: epsilon
+    variance_type: fixed_small
+  num_inference_steps: 100
+  obs_as_cond: true
+  obs_dim: 19
+  pred_action_steps_only: false
+pred_action_steps_only: false
+task:
+  abs_action: true
+  action_dim: 10
+  dataset:
+    _target_: diffusion_policy.dataset.robomimic_replay_lowdim_dataset.RobomimicReplayLowdimDataset
+    abs_action: true
+    dataset_path: data/robomimic/datasets/lift/mh/low_dim_abs.hdf5
+    horizon: 10
+    obs_keys:
+    - object
+    - robot0_eef_pos
+    - robot0_eef_quat
+    - robot0_gripper_qpos
+    pad_after: 7
+    pad_before: 1
+    rotation_rep: rotation_6d
+    seed: 42
+    val_ratio: 0.02
+  dataset_path: data/robomimic/datasets/lift/mh/low_dim_abs.hdf5
+  dataset_type: mh
+  env_runner:
+    _target_: diffusion_policy.env_runner.robomimic_lowdim_runner.RobomimicLowdimRunner
+    abs_action: true
+    crf: 22
+    dataset_path: data/robomimic/datasets/lift/mh/low_dim_abs.hdf5
+    fps: 10
+    max_steps: 500
+    n_action_steps: 8
+    n_envs: 28
+    n_latency_steps: 0
+    n_obs_steps: 2
+    n_test: 50
+    n_test_vis: 3
+    n_train: 6
+    n_train_vis: 2
+    obs_keys:
+    - object
+    - robot0_eef_pos
+    - robot0_eef_quat
+    - robot0_gripper_qpos
+    past_action: false
+    render_hw:
+    - 128
+    - 128
+    test_start_seed: 100000
+    tqdm_interval_sec: 1.0
+    train_start_idx: 0
+  keypoint_dim: 3
+  name: lift_lowdim
+  obs_dim: 19
+  obs_keys:
+  - object
+  - robot0_eef_pos
+  - robot0_eef_quat
+  - robot0_gripper_qpos
+  task_name: lift
+task_name: lift_lowdim
+training:
+  checkpoint_every: 50
+  debug: false
+  device: cuda:0
+  gradient_accumulate_every: 1
+  lr_scheduler: cosine
+  lr_warmup_steps: 1000
+  max_train_steps: null
+  max_val_steps: null
+  num_epochs: 8000
+  resume: true
+  rollout_every: 50
+  sample_every: 5
+  seed: 42
+  tqdm_interval_sec: 1.0
+  use_ema: true
+  val_every: 1
+val_dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: false

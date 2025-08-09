@@ -1,0 +1,155 @@
+_target_: diffusion_policy.workspace.train_bet_lowdim_workspace.TrainBETLowdimWorkspace
+action_dim: 7
+checkpoint:
+  save_last_ckpt: true
+  save_last_snapshot: false
+  topk:
+    format_str: epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt
+    k: 5
+    mode: max
+    monitor_key: test_mean_score
+dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: true
+exp_name: default
+horizon: 10
+keypoint_dim: 3
+keypoint_visible_rate: 1.0
+logging:
+  group: null
+  id: null
+  mode: online
+  name: 2022.12.27-19.30.17_train_bet_lowdim_lift_lowdim
+  project: diffusion_policy_debug
+  resume: true
+  tags:
+  - train_bet_lowdim
+  - lift_lowdim
+  - default
+multi_run:
+  run_dir: data/outputs/2022.12.27/19.30.17_train_bet_lowdim_lift_lowdim
+  wandb_name_base: 2022.12.27-19.30.17_train_bet_lowdim_lift_lowdim
+n_action_steps: 8
+n_latency_steps: 0
+n_obs_steps: 2
+name: train_bet_lowdim
+obs_as_global_cond: false
+obs_as_local_cond: false
+obs_dim: 19
+optimizer:
+  betas:
+  - 0.9
+  - 0.95
+  learning_rate: 0.0001
+  weight_decay: 0.1
+past_action_visible: false
+policy:
+  _target_: diffusion_policy.policy.bet_lowdim_policy.BETLowdimPolicy
+  action_ae:
+    _target_: diffusion_policy.model.bet.action_ae.discretizers.k_means.KMeansDiscretizer
+    action_dim: 7
+    num_bins: 24
+    predict_offsets: true
+  horizon: 10
+  n_action_steps: 8
+  n_obs_steps: 2
+  obs_encoding_net:
+    _target_: torch.nn.Identity
+    output_dim: 19
+  state_prior:
+    _target_: diffusion_policy.model.bet.latent_generators.mingpt.MinGPT
+    action_dim: 7
+    block_size: 10
+    discrete_input: false
+    focal_loss_gamma: 2.0
+    input_dim: 19
+    n_embd: 72
+    n_head: 4
+    n_layer: 4
+    offset_loss_scale: 1000.0
+    predict_offsets: true
+    vocab_size: 24
+pred_action_steps_only: false
+task:
+  abs_action: false
+  action_dim: 7
+  dataset:
+    _target_: diffusion_policy.dataset.robomimic_replay_lowdim_dataset.RobomimicReplayLowdimDataset
+    abs_action: false
+    dataset_path: data/robomimic/datasets/lift/mh/low_dim.hdf5
+    horizon: 10
+    obs_keys:
+    - object
+    - robot0_eef_pos
+    - robot0_eef_quat
+    - robot0_gripper_qpos
+    pad_after: 7
+    pad_before: 1
+    seed: 42
+    val_ratio: 0.02
+  dataset_path: data/robomimic/datasets/lift/mh/low_dim.hdf5
+  dataset_type: mh
+  env_runner:
+    _target_: diffusion_policy.env_runner.robomimic_lowdim_runner.RobomimicLowdimRunner
+    abs_action: false
+    crf: 22
+    dataset_path: data/robomimic/datasets/lift/mh/low_dim.hdf5
+    fps: 10
+    max_steps: 500
+    n_action_steps: 8
+    n_envs: 28
+    n_latency_steps: 0
+    n_obs_steps: 2
+    n_test: 50
+    n_test_vis: 4
+    n_train: 6
+    n_train_vis: 2
+    obs_keys:
+    - object
+    - robot0_eef_pos
+    - robot0_eef_quat
+    - robot0_gripper_qpos
+    past_action: false
+    render_hw:
+    - 128
+    - 128
+    test_start_seed: 100000
+    tqdm_interval_sec: 1.0
+    train_start_idx: 0
+  keypoint_dim: 3
+  name: lift_lowdim
+  obs_dim: 19
+  obs_keys:
+  - object
+  - robot0_eef_pos
+  - robot0_eef_quat
+  - robot0_gripper_qpos
+  task_name: lift
+task_name: lift_lowdim
+training:
+  checkpoint_every: 50
+  debug: false
+  device: cuda:0
+  enable_normalizer: true
+  grad_norm_clip: 1.0
+  gradient_accumulate_every: 1
+  lr_scheduler: cosine
+  lr_warmup_steps: 500
+  max_train_steps: null
+  max_val_steps: null
+  num_epochs: 8000
+  resume: true
+  rollout_every: 50
+  sample_every: 5
+  seed: 42
+  tqdm_interval_sec: 1.0
+  val_every: 1
+val_dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: false

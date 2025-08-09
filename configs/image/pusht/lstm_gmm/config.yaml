@@ -1,0 +1,142 @@
+_target_: diffusion_policy.workspace.train_robomimic_image_workspace.TrainRobomimicImageWorkspace
+checkpoint:
+  save_last_ckpt: true
+  save_last_snapshot: false
+  topk:
+    format_str: epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt
+    k: 5
+    mode: max
+    monitor_key: test_mean_score
+dataloader:
+  batch_size: 64
+  num_workers: 16
+  persistent_workers: false
+  pin_memory: true
+  shuffle: true
+dataset_obs_steps: 10
+exp_name: default
+horizon: 8
+keypoint_visible_rate: 1.0
+logging:
+  group: null
+  id: null
+  mode: online
+  name: 2023.01.16-20.18.49_train_robomimic_image_pusht_image
+  project: diffusion_policy_debug
+  resume: true
+  tags:
+  - train_robomimic_image
+  - pusht_image
+  - default
+multi_run:
+  run_dir: data/outputs/2023.01.16/20.18.49_train_robomimic_image_pusht_image
+  wandb_name_base: 2023.01.16-20.18.49_train_robomimic_image_pusht_image
+n_action_steps: 1
+n_latency_steps: 0
+n_obs_steps: 1
+name: train_robomimic_image
+past_action_visible: false
+policy:
+  _target_: diffusion_policy.policy.robomimic_image_policy.RobomimicImagePolicy
+  algo_name: bc_rnn
+  crop_shape:
+  - 84
+  - 84
+  dataset_type: ph
+  obs_type: image
+  shape_meta:
+    action:
+      shape:
+      - 2
+    obs:
+      agent_pos:
+        shape:
+        - 2
+        type: low_dim
+      image:
+        shape:
+        - 3
+        - 96
+        - 96
+        type: rgb
+  task_name: lift
+shape_meta:
+  action:
+    shape:
+    - 2
+  obs:
+    agent_pos:
+      shape:
+      - 2
+      type: low_dim
+    image:
+      shape:
+      - 3
+      - 96
+      - 96
+      type: rgb
+task:
+  dataset:
+    _target_: diffusion_policy.dataset.pusht_image_dataset.PushTImageDataset
+    horizon: 8
+    max_train_episodes: 90
+    pad_after: 0
+    pad_before: 0
+    seed: 42
+    val_ratio: 0.02
+    zarr_path: data/pusht/pusht_cchi_v7_replay.zarr
+  env_runner:
+    _target_: diffusion_policy.env_runner.pusht_image_runner.PushTImageRunner
+    fps: 10
+    legacy_test: true
+    max_steps: 300
+    n_action_steps: 1
+    n_envs: null
+    n_obs_steps: 1
+    n_test: 50
+    n_test_vis: 4
+    n_train: 6
+    n_train_vis: 2
+    past_action: false
+    test_start_seed: 100000
+    train_start_seed: 0
+  image_shape:
+  - 3
+  - 96
+  - 96
+  name: pusht_image
+  shape_meta:
+    action:
+      shape:
+      - 2
+    obs:
+      agent_pos:
+        shape:
+        - 2
+        type: low_dim
+      image:
+        shape:
+        - 3
+        - 96
+        - 96
+        type: rgb
+task_name: pusht_image
+training:
+  checkpoint_every: 50
+  debug: false
+  device: cuda:0
+  max_train_steps: null
+  max_val_steps: null
+  num_epochs: 3050
+  resume: true
+  rollout_every: 50
+  sample_every: 5
+  seed: 42
+  tqdm_interval_sec: 1.0
+  val_every: 1
+val_dataloader:
+  batch_size: 64
+  num_workers: 16
+  persistent_workers: false
+  pin_memory: true
+  shuffle: false

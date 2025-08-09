@@ -1,0 +1,131 @@
+_target_: diffusion_policy.workspace.train_bet_lowdim_workspace.TrainBETLowdimWorkspace
+action_dim: 2
+checkpoint:
+  save_last_ckpt: true
+  save_last_snapshot: false
+  topk:
+    format_str: epoch={epoch:04d}-test_mean_score={test_mean_score:.3f}.ckpt
+    k: 5
+    mode: max
+    monitor_key: test_mean_score
+dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: true
+exp_name: default
+horizon: 3
+keypoint_dim: 2
+keypoint_visible_rate: 1.0
+logging:
+  group: null
+  id: null
+  mode: online
+  name: 2022.12.27-02.31.53_train_bet_lowdim_blockpush_lowdim_seed
+  project: diffusion_policy_debug
+  resume: true
+  tags:
+  - train_bet_lowdim
+  - blockpush_lowdim_seed
+  - default
+multi_run:
+  run_dir: data/outputs/2022.12.27/02.31.53_train_bet_lowdim_blockpush_lowdim_seed
+  wandb_name_base: 2022.12.27-02.31.53_train_bet_lowdim_blockpush_lowdim_seed
+n_action_steps: 1
+n_obs_steps: 3
+name: train_bet_lowdim
+obs_as_global_cond: false
+obs_as_local_cond: false
+obs_dim: 16
+optimizer:
+  betas:
+  - 0.9
+  - 0.95
+  learning_rate: 0.0001
+  weight_decay: 0.1
+past_action_visible: false
+policy:
+  _target_: diffusion_policy.policy.bet_lowdim_policy.BETLowdimPolicy
+  action_ae:
+    _target_: diffusion_policy.model.bet.action_ae.discretizers.k_means.KMeansDiscretizer
+    action_dim: 2
+    num_bins: 24
+    predict_offsets: true
+  horizon: 3
+  n_action_steps: 1
+  n_obs_steps: 3
+  obs_encoding_net:
+    _target_: torch.nn.Identity
+    output_dim: 16
+  state_prior:
+    _target_: diffusion_policy.model.bet.latent_generators.mingpt.MinGPT
+    action_dim: 2
+    block_size: 3
+    discrete_input: false
+    focal_loss_gamma: 2.0
+    input_dim: 16
+    n_embd: 72
+    n_head: 4
+    n_layer: 4
+    offset_loss_scale: 1000.0
+    predict_offsets: true
+    vocab_size: 24
+pred_action_steps_only: false
+task:
+  action_dim: 2
+  dataset:
+    _target_: diffusion_policy.dataset.blockpush_lowdim_dataset.BlockPushLowdimDataset
+    horizon: 3
+    obs_eef_target: true
+    pad_after: 0
+    pad_before: 2
+    seed: 42
+    use_manual_normalizer: false
+    val_ratio: 0.02
+    zarr_path: data/block_pushing/multimodal_push_seed.zarr
+  env_runner:
+    _target_: diffusion_policy.env_runner.blockpush_lowdim_runner.BlockPushLowdimRunner
+    abs_action: false
+    fps: 5
+    max_steps: 350
+    n_action_steps: 1
+    n_envs: null
+    n_obs_steps: 3
+    n_test: 50
+    n_test_vis: 4
+    n_train: 6
+    n_train_vis: 2
+    obs_eef_target: true
+    past_action: false
+    test_start_seed: 100000
+    train_start_seed: 0
+  keypoint_dim: 2
+  name: blockpush_lowdim_seed
+  obs_dim: 16
+  obs_eef_target: true
+task_name: blockpush_lowdim_seed
+training:
+  checkpoint_every: 50
+  debug: false
+  device: cuda:0
+  enable_normalizer: true
+  grad_norm_clip: 1.0
+  gradient_accumulate_every: 1
+  lr_scheduler: cosine
+  lr_warmup_steps: 500
+  max_train_steps: null
+  max_val_steps: null
+  num_epochs: 8000
+  resume: true
+  rollout_every: 50
+  sample_every: 5
+  seed: 42
+  tqdm_interval_sec: 1.0
+  val_every: 1
+val_dataloader:
+  batch_size: 256
+  num_workers: 1
+  persistent_workers: false
+  pin_memory: true
+  shuffle: false
