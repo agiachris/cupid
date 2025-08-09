@@ -1,4 +1,4 @@
 [submodule "third_party/trak"]
 	path = third_party/trak
-	url = git@github.com:agiachris/trak.git
-	branch = feature
+	url = https://github.com/agiachris/trak.git
+	branch = main
